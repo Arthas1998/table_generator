@@ -1,7 +1,8 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header>
+      <el-header class="header">
+        <div class="logo">My Logo</div>
         <Navigation />
       </el-header>
       <el-main>Main</el-main>
@@ -27,19 +28,17 @@ export default {
   flex-direction: column;
 }
 
-.el-header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background-color: #fff;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  width: 100%;
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  //background-color: #f5f5f5;
 }
 
-.el-main {
-  flex: 1;
-  padding: 20px;
-  background-color: #f5f5f5;
-  overflow-y: auto;
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  margin-right: 20px;
 }
 </style>
+
