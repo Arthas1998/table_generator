@@ -1,9 +1,9 @@
 <script setup>
-
+import MenuBar from "@/components/MenuBar/MenuBar.vue";
 </script>
 
 <template>
-  <h1>markdown</h1>
+  <MenuBar />
 </template>
 
 <style scoped>

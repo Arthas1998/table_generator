@@ -1,9 +1,9 @@
 <script setup>
-import LatexMenuBar from "@/components/MenuBar/LatexMenuBar.vue";
+import MenuBar from "@/components/MenuBar/MenuBar.vue";
 </script>
 
 <template>
-  <LatexMenuBar />
+  <MenuBar />
 </template>
 
 <style scoped>
