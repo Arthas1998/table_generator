@@ -1,5 +1,5 @@
 <template>
-  <el-menu mode="horizontal" :default-active="activeName" @select="selectedIndex" background-color=""
+  <el-menu mode="horizontal" :default-active="navStore.activeName" @select="selectedIndex" background-color=""
            text-color="" active-text-color="">
     <el-menu-item index="latex">LaTeX</el-menu-item>
     <el-menu-item index="markdown">Markdown</el-menu-item>
@@ -7,16 +7,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useNavStore } from "@/stores/NavRouter.js";
 
-const activeName = ref('latex')
+const navStore = useNavStore()
 const router = useRouter()
 
 const selectedIndex = (index) => {
-  activeName.value = index;
+  navStore.switchPage(index)
   router.push(`/${index}`);
-  console.log("index:", index, "activeName:", activeName.value)
+  console.log("index:", index, "activeName:", navStore.activeName)
 }
 </script>
 
