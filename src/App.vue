@@ -6,8 +6,10 @@
         <Navigation />
       </el-header>
       <el-main>
-
+        <router-view />
       </el-main>
+      <el-footer>
+      </el-footer>
     </el-container>
   </div>
 </template>
@@ -16,9 +18,9 @@
 import Navigation from "./components/Navigation.vue";
 
 
+
 </script>
 
 <style scoped>
 
 </style>
-

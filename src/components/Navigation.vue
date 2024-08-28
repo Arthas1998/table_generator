@@ -8,14 +8,15 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useNavRouteStore } from "@/stores/web.js";
+import { useRouter } from "vue-router";
 
 const activeName = ref('latex')
-const navRouteStore = useNavRouteStore()
+const router = useRouter()
 
-const selectedIndex = (index, indexPath) => {
-  navRouteStore.switchPage(indexPath[0])
-  console.log("index", index, "indexPath", indexPath)
+const selectedIndex = (index) => {
+  activeName.value = index;
+  router.push(`/${index}`);
+  console.log("index:", index, "activeName:", activeName.value)
 }
 </script>
 

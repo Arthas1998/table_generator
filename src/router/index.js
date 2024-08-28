@@ -2,12 +2,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
-    path: '/latex',
-    component: () => import('../views/latex.vue'),
+    path: '/',
+    alias:'/latex',
+    component: () => import('@/views/LatexPage.vue'),
   },
   {
     path: '/markdown',
-    component: () => import('../views/markdown.vue'),
+    component: () => import('@/views/MarkdownPage.vue'),
   },
 ]
 
