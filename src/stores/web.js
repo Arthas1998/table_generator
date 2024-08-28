@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
+import {createRouter} from "vue-router";
 
 export const useWebStore = defineStore('web', () => {
     const web = reactive({
@@ -9,5 +10,17 @@ export const useWebStore = defineStore('web', () => {
 
     return {
         web
+    }
+})
+
+export const useNavRouteStore = defineStore('navRoute', () => {
+    const tabs = ref('latex')
+
+    const switchPage = (newPage) => {
+        tabs.value = newPage
+    }
+
+    return {
+        tabs
     }
 })

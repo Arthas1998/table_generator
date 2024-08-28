@@ -8,23 +8,17 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useNavRouteStore } from "@/stores/web.js";
 
 const activeName = ref('latex')
+const navRouteStore = useNavRouteStore()
 
 const selectedIndex = (index, indexPath) => {
-  console.log(index, indexPath)
+  navRouteStore.switchPage(indexPath[0])
+  console.log("index", index, "indexPath", indexPath)
 }
 </script>
 
 <style scoped>
-.demo-tabs {
-  flex: 1;
-}
 
-.demo-tabs > .el-tabs__content {
-  padding: 32px;
-  color: #6b778c;
-  font-size: 32px;
-  font-weight: 600;
-}
 </style>
