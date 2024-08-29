@@ -1,0 +1,8 @@
+.tool-bar-icon{
+    display: inline;
+    font-size: 24px;
+}
+.navigation-container {
+  display: flex;
+  align-items: center;
+}

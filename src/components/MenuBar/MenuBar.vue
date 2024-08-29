@@ -6,7 +6,6 @@ import Column from "@/components/MenuBar/MenuComponents/Column.vue";
 import Row from "@/components/MenuBar/MenuComponents/Row.vue";
 import Cell from "@/components/MenuBar/MenuComponents/Cell.vue";
 import Help from "@/components/MenuBar/MenuComponents/Help.vue";
-import SvgIcon from "@/components/SvgIcon.vue";
 </script>
 
 <template>
@@ -18,7 +17,6 @@ import SvgIcon from "@/components/SvgIcon.vue";
     <Row />
     <Cell />
     <Help />
-    <SvgIcon name="Bold" class="svg-bold"/>
   </div>
 </template>
 
