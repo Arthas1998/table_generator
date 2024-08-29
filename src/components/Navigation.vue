@@ -1,8 +1,12 @@
 <template>
   <el-menu mode="horizontal" :default-active="navStore.activeName" @select="selectedIndex" background-color=""
            text-color="" active-text-color="">
-    <el-menu-item index="latex">LaTeX</el-menu-item>
-    <el-menu-item index="markdown">Markdown</el-menu-item>
+    <el-menu-item index="latex">
+      LaTeX
+    </el-menu-item>
+    <el-menu-item index="markdown">
+      Markdown
+    </el-menu-item>
   </el-menu>
 </template>
 
