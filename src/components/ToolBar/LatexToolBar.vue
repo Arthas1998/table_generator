@@ -1,9 +1,9 @@
 <template>
   <div class="tool-bar">
-    <AlignLeft /><AlignCenter /><AlignRight />
-    <Bold /><Italic /><Underline />
-    <AddAllBorders /><RemoveAllBorders />
-    <MergeCells /><SplitCells />
+    <span class="text-align"><AlignLeft /><AlignCenter /><AlignRight /></span>
+    <span class="text-align"><Bold /><Italic /><Underline /></span>
+    <span class="text-align"><AddAllBorders /><RemoveAllBorders /></span>
+    <span class="text-align"><MergeCells /><SplitCells /></span>
   </div>
 </template>
 
@@ -23,5 +23,9 @@ import SplitCells from "@/components/ToolBar/ToolComponents/SplitCells.vue";
 <style scoped>
 .tool-bar{
   display: flex;
+}
+.text-align{
+  display: flex;
+  margin-right: 30px;
 }
 </style>
