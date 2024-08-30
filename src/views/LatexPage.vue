@@ -18,7 +18,7 @@ import LatexHelpBlock from "@/components/HelpBlock/LatexHelpBlock.vue";
 
 <style>
 .temporary{
-  margin: 300px;
+  margin: 150px;
 }
 
 </style>

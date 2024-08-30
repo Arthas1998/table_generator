@@ -18,7 +18,7 @@ import MarkdownHelpBlock from "@/components/HelpBlock/MarkdownHelpBlock.vue";
 
 <style>
 .temporary{
-  margin: 300px;
+  margin: 150px;
 }
 
 </style>
