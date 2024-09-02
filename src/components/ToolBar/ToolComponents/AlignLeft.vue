@@ -1,6 +1,8 @@
 <template>
   <span class="navigation-container">
-    <SvgIcon name="AlignLeft" class="tool-bar-icon" />
+    <el-button text>
+      <SvgIcon name="AlignLeft" class="tool-bar-icon" />
+    </el-button>
   </span>
 </template>
 

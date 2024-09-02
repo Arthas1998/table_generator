@@ -3,7 +3,10 @@
     font-size: 24px;
 }
 .navigation-container {
-    display: flex;
+    display: inline;
     align-items: center;
+    padding-left: 1px;
+    padding-right: 1px;
+    border: 0;
     margin: 10px;
 }

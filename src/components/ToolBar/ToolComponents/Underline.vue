@@ -1,6 +1,8 @@
 <template>
   <span class="navigation-container">
-    <SvgIcon name="Underline" class="tool-bar-icon" />
+    <el-button text>
+      <SvgIcon name="Underline" class="tool-bar-icon" />
+    </el-button>
   </span>
 </template>
 

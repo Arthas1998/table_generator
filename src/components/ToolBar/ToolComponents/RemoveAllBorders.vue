@@ -1,6 +1,8 @@
 <template>
   <span class="navigation-container">
-    <SvgIcon name="RemoveAllBorders" class="tool-bar-icon" />
+    <el-button text>
+      <SvgIcon name="RemoveAllBorders" class="tool-bar-icon" />
+    </el-button>
   </span>
 </template>
 

@@ -2,7 +2,7 @@
   <div>
     <el-container>
       <el-header>
-        <div class="navigation-container">
+        <div class="logo-container">
           <span class="logo">
             <SvgIcon name="Logo" class="title-and-logo" />
           </span>
@@ -38,7 +38,7 @@ import SvgIcon from "@/components/SvgIcon.vue";
   font-size: 24px;
   color: #1c93ce;
 }
-.navigation-container {
+.logo-container {
   display: flex;
   align-items: center;
 }
