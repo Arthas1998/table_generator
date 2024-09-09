@@ -1,5 +1,5 @@
 <template>
-  <svg :class="'svg-icon ' + className">
+  <svg :class="'svg-icon' + className">
     <use :href="symbolId" />
   </svg>
 </template>

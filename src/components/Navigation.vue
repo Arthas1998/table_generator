@@ -13,7 +13,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useNavStore } from "@/stores/NavRouter.js";
+import { useNavStore } from "@/stores/router.js";
 import SvgIcon from "@/components/SvgIcon.vue";
 
 const navStore = useNavStore()
