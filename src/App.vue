@@ -23,6 +23,7 @@
 <script setup>
 import Navigation from "./components/Navigation.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
+import CustomTable from "@/components/CustomTable.vue";
 </script>
 
 <style scoped>

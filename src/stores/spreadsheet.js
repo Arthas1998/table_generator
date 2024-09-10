@@ -1,10 +1,8 @@
-
 import { defineStore } from 'pinia';
 
 export const useSpreadsheetStore = defineStore('spreadsheet', {
   state: () => ({
-    spreadsheetInstance: null,
-    initialData: Array(4).fill(Array(4).fill('')) // 4行4列的空表格
+    spreadsheetInstance: null
   }),
   actions: {
     setSpreadsheet(instance) {
@@ -22,8 +20,5 @@ export const useSpreadsheetStore = defineStore('spreadsheet', {
     refresh() {
       this.spreadsheetInstance.refresh();
     }
-  },
-  getters: {
-    getInitialData: (state) => state.initialData
   }
 });
