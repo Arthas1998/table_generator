@@ -1,31 +1,71 @@
+<!--<template>-->
+<!--  <div ref="spreadsheet"></div>-->
+<!--</template>-->
+
+<!--<script setup>-->
+<!--import { ref, onMounted } from 'vue';-->
+<!--import { useSpreadsheetStore } from '../stores/spreadsheet';-->
+<!--import jspreadsheet from 'jspreadsheet-ce';-->
+
+<!--// 创建 ref 绑定到 DOM-->
+<!--const spreadsheetRef = ref(null);-->
+<!--const spreadsheetStore = useSpreadsheetStore();-->
+
+<!--onMounted(() => {-->
+<!--  // 初始化 Jspreadsheet-->
+<!--  const spreadsheetInstance = jspreadsheet(spreadsheetRef.value, {-->
+<!--    data: [['Apple', 1], ['Banana', 2]],-->
+<!--    columns: [-->
+<!--      { type: 'text', title: 'Item', width: 150 },-->
+<!--      { type: 'numeric', title: 'Quantity', width: 80 }-->
+<!--    ]-->
+<!--  });-->
+
+<!--  // 存储实例到 Pinia 中-->
+<!--  spreadsheetStore.setSpreadsheet(spreadsheetInstance);-->
+<!--});-->
+<!--</script>-->
+
+<!--<style>-->
+<!--@import 'jspreadsheet-ce/dist/jspreadsheet.css';-->
+<!--</style>-->
 <template>
-  <div ref="spreadsheet"></div>
+  <div>
+    <div id="spreadsheet" ref="spreadsheet"></div>
+  </div>
 </template>
 
-<script setup>
+<script>
 import { ref, onMounted } from 'vue';
-import { useSpreadsheetStore } from '../stores/spreadsheet';
 import jspreadsheet from 'jspreadsheet-ce';
+import 'jspreadsheet-ce/dist/jspreadsheet.css';
+import 'jsuites/dist/jsuites.css';
+import { useSpreadsheetStore } from '../stores/spreadsheet';
 
-// 创建 ref 绑定到 DOM
-const spreadsheetRef = ref(null);
-const spreadsheetStore = useSpreadsheetStore();
+export default {
+  name: 'App',
+  setup() {
+    const spreadsheet = ref(null);
+    const spreadsheetStore = useSpreadsheetStore();
 
-onMounted(() => {
-  // 初始化 Jspreadsheet
-  const spreadsheetInstance = jspreadsheet(spreadsheetRef.value, {
-    data: [['Apple', 1], ['Banana', 2]],
-    columns: [
-      { type: 'text', title: 'Item', width: 150 },
-      { type: 'numeric', title: 'Quantity', width: 80 }
-    ]
-  });
+    onMounted(() => {
+      const options = {
+        data: spreadsheetStore.data, // 从 store 中获取数据
+        columns: spreadsheetStore.columns
+      };
 
-  // 存储实例到 Pinia 中
-  spreadsheetStore.setSpreadsheet(spreadsheetInstance);
-});
+      if (spreadsheet.value) {
+        jspreadsheet(spreadsheet.value, options);
+      }
+    });
+
+    return {
+      spreadsheet
+    };
+  }
+};
 </script>
 
 <style>
-@import 'jspreadsheet-ce/dist/jspreadsheet.css';
+/* 自定义样式 */
 </style>
