@@ -39,28 +39,48 @@
 // src/stores/spreadsheet.js
 import { defineStore } from 'pinia';
 
-export const useSpreadsheetStore = defineStore('spreadsheet', {
+export const useSpreadsheetStore = defineStore('spreadsheetstore', {
   state: () => ({
     data: [
-      ['Jazz', 'Honda', '2019-02-12', '', true, '$ 2.000,00', '#777700'],
-      ['Civic', 'Honda', '2018-07-11', '', true, '$ 4.000,01', '#007777']
+        ['', '', '', ''],
+        ['', '', '', ''],
+        ['', '', '', ''],
+        ['', '', '', ''],
+        ['', '', '', ''],
     ],
+    // columns: [
+    //     { type: 'text', title: 'A', width: 150 },
+    //     { type: 'text', title: 'B', width: 150 },
+    //     { type: 'text', title: 'C', width: 150 },
+    //     { type: 'text', title: 'D', width: 150 },
+    // ],
     columns: [
-      { type: 'text', title: 'Car', width: '120px' },
-      { type: 'dropdown', title: 'Make', width: '250px', source: ['Alfa Romeo', 'Audi', 'Bmw'] },
-      { type: 'calendar', title: 'Available', width: '250px' },
-      { type: 'image', title: 'Photo', width: '120px' },
-      { type: 'checkbox', title: 'Stock', width: '80px' },
-      { type: 'numeric', title: 'Price', width: '100px', mask: '$ #.##,00', decimal: ',' },
-      { type: 'color', title: 'Color', width: '100px', render: 'square' }
-    ]
+        { type: 'text', width: 150 },
+        { type: 'text', width: 150 },
+        { type: 'text', width: 150 },
+        { type: 'text', width: 150 },
+    ],
+    spreadsheetInstance: null,
   }),
   actions: {
-    setData(newData) {
-      this.data = newData;
-    },
-    setColumns(newColumns) {
-      this.columns = newColumns;
-    }
+    // setSpreadsheetInstance(instance) { // 新增方法
+    //   this.spreadsheetInstance = instance;
+    // },
+    // setData(newData) {
+    //   this.data = newData;
+    // },
+    // setColumns(newColumns) {
+    //   this.columns = newColumns;
+    // },
+    // resetSpreadsheet() {
+    //   if (this.spreadsheetInstance) {
+    //     // 清空表格数据
+    //     this.spreadsheetInstance.clear();
+    //
+    //     // 使用store中的数据和列重新设置表格
+    //     this.spreadsheetInstance.loadData(this.data);
+    //     this.spreadsheetInstance.setColumns(this.columns);
+    //   }
+    // },
   }
 });

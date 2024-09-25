@@ -33,14 +33,15 @@
   <div>
     <div id="spreadsheet" ref="spreadsheet"></div>
   </div>
+  {{ spreadsheet }}
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import {onMounted, ref} from 'vue';
 import jspreadsheet from 'jspreadsheet-ce';
 import 'jspreadsheet-ce/dist/jspreadsheet.css';
 import 'jsuites/dist/jsuites.css';
-import { useSpreadsheetStore } from '../stores/spreadsheet';
+import {useSpreadsheetStore} from '@/stores/spreadsheet';
 
 export default {
   name: 'App',
@@ -53,14 +54,17 @@ export default {
         data: spreadsheetStore.data, // 从 store 中获取数据
         columns: spreadsheetStore.columns
       };
-
+      // jspreadsheet(spreadsheet.value, options)
       if (spreadsheet.value) {
-        jspreadsheet(spreadsheet.value, options);
+        jspreadsheet(spreadsheet.value, options)
       }
+      // spreadsheetStore.spreadsheetInstance = spreadsheet.value;
+      // return spreadsheet.value
     });
 
     return {
-      spreadsheet
+      spreadsheet,
+      // table1
     };
   }
 };

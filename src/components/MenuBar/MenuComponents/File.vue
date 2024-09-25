@@ -1,5 +1,20 @@
 <script setup>
 import { ArrowDown } from '@element-plus/icons-vue'
+import { useSpreadsheetStore } from '@/stores/spreadsheet'
+
+const spreadsheetStore = useSpreadsheetStore();
+
+function new_table() {
+  spreadsheetStore.resetSpreadsheet()
+}
+
+
+const handleCommand = (command) => {
+  // if (command === 'new_table') {
+  //   // new_table()
+  // }
+}
+
 </script>
 
 <template>
@@ -9,18 +24,18 @@ import { ArrowDown } from '@element-plus/icons-vue'
     </el-button>
     <template #dropdown>
       <el-dropdown-menu>
-        <el-dropdown-item>New table...</el-dropdown-item>
+        <el-dropdown-item @click="new_table">New table...</el-dropdown-item>
 
-        <el-dropdown-item divided>Import CSV file</el-dropdown-item>
-        <el-dropdown-item>Paste table data</el-dropdown-item>
-        <el-dropdown-item>From Latex code</el-dropdown-item>
+        <el-dropdown-item command="csv" divided>Import CSV file</el-dropdown-item>
+        <el-dropdown-item command="paste">Paste table data</el-dropdown-item>
+        <el-dropdown-item command="from_latex">From Latex code</el-dropdown-item>
 
-        <el-dropdown-item divided>Save table...</el-dropdown-item>
-        <el-dropdown-item>Load table...</el-dropdown-item>
+        <el-dropdown-item command="save_table" divided>Save table...</el-dropdown-item>
+        <el-dropdown-item command="load_table">Load table...</el-dropdown-item>
 
-        <el-dropdown-item divided>Download as CSV</el-dropdown-item>
+        <el-dropdown-item command="download" divided>Download as CSV</el-dropdown-item>
 
-        <el-dropdown-item divided>Create an example table</el-dropdown-item>
+        <el-dropdown-item command="example" divided>Create an example table</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>
