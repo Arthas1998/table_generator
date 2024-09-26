@@ -52,7 +52,8 @@ export default {
     onMounted(() => {
       const options = {
         data: spreadsheetStore.data, // 从 store 中获取数据
-        columns: spreadsheetStore.columns
+        columns: spreadsheetStore.columns,
+        style: spreadsheetStore.style
       };
       // jspreadsheet(spreadsheet.value, options)
       if (spreadsheet.value) {

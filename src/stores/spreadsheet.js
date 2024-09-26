@@ -46,7 +46,6 @@ export const useSpreadsheetStore = defineStore('spreadsheetstore', {
         ['', '', '', ''],
         ['', '', '', ''],
         ['', '', '', ''],
-        ['', '', '', ''],
     ],
     // columns: [
     //     { type: 'text', title: 'A', width: 150 },
@@ -60,27 +59,10 @@ export const useSpreadsheetStore = defineStore('spreadsheetstore', {
         { type: 'text', width: 150 },
         { type: 'text', width: 150 },
     ],
+    style: {},
     spreadsheetInstance: null,
   }),
   actions: {
-    // setSpreadsheetInstance(instance) { // 新增方法
-    //   this.spreadsheetInstance = instance;
-    // },
-    // setData(newData) {
-    //   this.data = newData;
-    // },
-    // setColumns(newColumns) {
-    //   this.columns = newColumns;
-    // },
-    // resetSpreadsheet() {
-    //   if (this.spreadsheetInstance) {
-    //     // 清空表格数据
-    //     this.spreadsheetInstance.clear();
-    //
-    //     // 使用store中的数据和列重新设置表格
-    //     this.spreadsheetInstance.loadData(this.data);
-    //     this.spreadsheetInstance.setColumns(this.columns);
-    //   }
-    // },
+
   }
 });
