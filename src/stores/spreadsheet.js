@@ -46,7 +46,6 @@ export const useSpreadsheetStore = defineStore('spreadsheetstore', {
         ['', '', '', ''],
         ['', '', '', ''],
         ['', '', '', ''],
-        ['', '', '', ''],
     ],
     // columns: [
     //     { type: 'text', title: 'A', width: 150 },
@@ -60,6 +59,7 @@ export const useSpreadsheetStore = defineStore('spreadsheetstore', {
         { type: 'text', width: 150 },
         { type: 'text', width: 150 },
     ],
+    style: {},
     spreadsheetInstance: null,
   }),
   actions: {
