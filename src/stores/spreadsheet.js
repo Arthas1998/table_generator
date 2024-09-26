@@ -63,6 +63,9 @@ export const useSpreadsheetStore = defineStore('spreadsheetstore', {
     spreadsheetInstance: null,
   }),
   actions: {
+      updateSpreadsheet(newData) {
+          this.data = newData;
+      },
     // setSpreadsheetInstance(instance) { // 新增方法
     //   this.spreadsheetInstance = instance;
     // },
