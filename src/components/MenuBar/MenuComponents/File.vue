@@ -11,9 +11,9 @@
         <el-dropdown-item @click="openDialog('Import CSV file', 'Import data from CSV file', importCSV,
             'You can import table data by uploading file in CSV format (Comma Separated Value). Most spreadsheet software, both desktop and online, allows to save tabular data in CSV format — it is usually available in the File menu under the name Save As... or Export.')"
             divided>Import CSV file...</el-dropdown-item>
-        <el-dropdown-item @click="openDialog('Paste table data', 'Paste table data', pasteData,
-        'Paste (Ctrl + V) below an existing table copied (Ctrl + C) from a spreadsheet (e.g. Microsoft Excel), a text document, a Markdown / HTML code, or even a website.'
-            )">Paste table data...</el-dropdown-item>
+<!--        <el-dropdown-item @click="openDialog('Paste table data', 'Paste table data', pasteData,-->
+<!--        'Paste (Ctrl + V) below an existing table copied (Ctrl + C) from a spreadsheet (e.g. Microsoft Excel), a text document, a Markdown / HTML code, or even a website.'-->
+<!--            )">Paste table data...</el-dropdown-item>-->
         <el-dropdown-item @click="openDialog('Paste Latex code', 'Paste LaTeX table source', pasteLatex,
         'Paste (Ctrl + V) below an existing LaTeX table code.\n'+'\n'+'Please, be aware that the support for loading tables from an existing LaTeX code is severely limited and may work erroneously or may not work at all.'
             )">From Latex code...</el-dropdown-item>
@@ -29,7 +29,10 @@
   </el-dropdown>
   <!-- 动态弹窗 -->
   <el-dialog v-model="dialogVisible">
-    <span>{{ dialogContent }}</span>
+    <div>{{ dialogContent }}</div>
+
+    <input v-if="dialogTitle === 'Import CSV file'" type="file" @change="handleFileChange" accept=".csv" />
+
     <p>{{ dialogContentText }}</p>
 
     <el-space direction="vertical" v-if="dialogTitle === 'Create new table'" class="input-section">
@@ -88,7 +91,6 @@ const openDialog = (title, content, action, text) => {
 };
 
 const createTable = () => {
-  console.log('New table created');
   // 初始化空的数据和样式
   const newData = Array.from({ length: Rows.value }, () => Array(Columns.value).fill(''));
   const newColumns = Array.from({ length: Columns.value }, () => ({
@@ -105,18 +107,60 @@ const createTable = () => {
   if (spreadsheetStore.spreadsheetInstance) {
     spreadsheetStore.spreadsheetInstance.destroy(); // 销毁旧实例
     spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, {
-      data: newData,
-      columns: newColumns,
-      style: newStyles
+      data: spreadsheetStore.data,
+      columns: spreadsheetStore.columns,
+      style: spreadsheetStore.style
     });
   }
+  console.log('New table created');
   dialogVisible.value = false; // 关闭弹窗
+};
+
+// const csvFile = ref(null)
+import Papa from 'papaparse';
+
+let csvFileContent = '';  // 用于存储文件的文本内容
+
+const handleFileChange = (event) => {
+  const file = event.target.files[0];  // 获取用户选择的文件
+  if (file) {
+    const reader = new FileReader();  // 创建FileReader对象
+    reader.onload = (e) => {
+      csvFileContent = e.target.result;  // 读取到的文件内容
+
+      // 解析 CSV 文件
+      Papa.parse(csvFileContent, {
+        complete: (results) => {
+          // 将解析后的数据存储
+          csvFileContent = results.data;
+        }
+      });
+    };
+    reader.readAsText(file);  // 读取文件内容为文本
+  }
 };
 
 const importCSV = () => {
   console.log('CSV file imported');
+  if (spreadsheetStore.spreadsheetInstance) {
+    // 销毁旧实例
+    spreadsheetStore.spreadsheetInstance.destroy();
+
+    // 重新初始化表格实例并使用解析后的CSV数据
+    spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, {
+      data: csvFileContent, // 使用解析后的CSV数据
+      columns: Array(csvFileContent[0].length).fill({ type: 'text', width: 100 }),  // 自动生成列
+    });
+
+    // 同步数据到Pinia仓库
+    spreadsheetStore.data = csvFileContent;
+    spreadsheetStore.columns = spreadsheetStore.spreadsheetInstance.options.columns;
+    spreadsheetStore.style = {};
+  }
   dialogVisible.value = false; // 关闭弹窗
 };
+
+
 
 const pasteData = () => {
   console.log('Table data pasted');
