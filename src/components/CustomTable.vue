@@ -25,6 +25,13 @@ export default {
       if (spreadsheet.value) {
         const instance = jspreadsheet(spreadsheet.value, options);
         spreadsheetStore.setSpreadsheetInstance(instance);  // 保存实例
+        document.addEventListener('mousedown', (event) => {
+          const isClickInside = spreadsheet.value.contains(event.target);
+
+          if (!isClickInside) {
+            event.preventDefault();
+          }
+        });
       }
     });
     return {
