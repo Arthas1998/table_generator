@@ -14,7 +14,7 @@
         <router-view />
       </el-main>
       <el-footer>
-        <span class="temporary">©wuweihang</span>
+        <div id="copyright">©wuweihang</div>
       </el-footer>
     </el-container>
   </div>
@@ -23,7 +23,6 @@
 <script setup>
 import Navigation from "./components/Navigation.vue";
 import SvgIcon from "@/components/SvgIcon.vue";
-import CustomTable from "@/components/CustomTable.vue";
 </script>
 
 <style scoped>
@@ -43,8 +42,9 @@ import CustomTable from "@/components/CustomTable.vue";
   display: flex;
   align-items: center;
 }
-.temporary {
-
+#copyright {
   text-align: center;
+  width: 50%;
+  margin: 0 auto;
 }
 </style>

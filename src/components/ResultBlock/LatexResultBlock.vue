@@ -17,38 +17,38 @@ const parseStyleToLatex = (style) => {
   let latexStyle = "";
 
   // 处理文字对齐
-  if (style.includes('text-align:left')) {
+  if (style.includes('text-align: left')) {
     latexStyle += "\\raggedright ";
-  } else if (style.includes('text-align:center')) {
+  } else if (style.includes('text-align: center')) {
     latexStyle += "\\centering ";
-  } else if (style.includes('text-align:right')) {
+  } else if (style.includes('text-align: right')) {
     latexStyle += "\\raggedleft ";
   }
 
   // 处理文字加粗
-  if (style.includes('font-weight:bold')) {
+  if (style.includes('font-weight: bold')) {
     latexStyle += "\\textbf{";
   }
 
   // 处理文字斜体
-  if (style.includes('font-style:italic')) {
+  if (style.includes('font-style: italic')) {
     latexStyle += "\\textit{";
   }
 
   // 处理文字下划线
-  if (style.includes('text-decoration:underline')) {
+  if (style.includes('text-decoration: underline')) {
     latexStyle += "\\underline{";
   }
 
   // 处理背景颜色
-  const bgColorMatch = style.match(/background-color:(\w+);/);
+  const bgColorMatch = style.match(/background-color: (\w+);/);
   if (bgColorMatch) {
     const bgColor = bgColorMatch[1];
     latexStyle += `\\cellcolor{${bgColor}} `;
   }
 
   // 处理文字颜色
-  const colorMatch = style.match(/color:(\w+);/);
+  const colorMatch = style.match(/color: (\w+);/);
   if (colorMatch) {
     const textColor = colorMatch[1];
     latexStyle += `\\textcolor{${textColor}}{`;
@@ -61,13 +61,13 @@ const closeStyleTags = (style) => {
   let closingTags = "";
 
   // 如果包含加粗、斜体、下划线、文字颜色，则关闭这些LaTeX命令
-  if (style.includes('font-weight:bold')) {
+  if (style.includes('font-weight: bold')) {
     closingTags += "}";
   }
-  if (style.includes('font-style:italic')) {
+  if (style.includes('font-style: italic')) {
     closingTags += "}";
   }
-  if (style.includes('text-decoration:underline')) {
+  if (style.includes('text-decoration: underline')) {
     closingTags += "}";
   }
   if (style.includes('color:')) {

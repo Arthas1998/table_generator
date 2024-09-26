@@ -2,7 +2,7 @@
 
   <div><MenuBar /></div> <hr>
   <div><LatexToolBar /></div> <hr>
-  <div class="custom_table"><CustomTables /></div> <hr>
+  <div id="custom_table"><CustomTables /></div> <hr>
   <div class="temporary"><ResultBlock /></div> <hr>
   <div class="temporary"><LatexHelpBlock /></div> <hr>
 
@@ -17,7 +17,7 @@ import LatexHelpBlock from "@/components/HelpBlock/LatexHelpBlock.vue";
 </script>
 
 <style>
-.custom_table{
+#custom_table{
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -26,5 +26,4 @@ import LatexHelpBlock from "@/components/HelpBlock/LatexHelpBlock.vue";
 .temporary{
   //margin: 150px;
 }
-
 </style>

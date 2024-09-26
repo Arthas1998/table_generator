@@ -47,17 +47,11 @@ export const useSpreadsheetStore = defineStore('spreadsheetstore', {
         ['', '', '', ''],
         ['', '', '', ''],
     ],
-    // columns: [
-    //     { type: 'text', title: 'A', width: 150 },
-    //     { type: 'text', title: 'B', width: 150 },
-    //     { type: 'text', title: 'C', width: 150 },
-    //     { type: 'text', title: 'D', width: 150 },
-    // ],
     columns: [
-        { type: 'text', width: 150 },
-        { type: 'text', width: 150 },
-        { type: 'text', width: 150 },
-        { type: 'text', width: 150 },
+        { type: 'text', width: 100 },
+        { type: 'text', width: 100 },
+        { type: 'text', width: 100 },
+        { type: 'text', width: 100 },
     ],
     style: {},
     spreadsheetInstance: null,
@@ -66,24 +60,8 @@ export const useSpreadsheetStore = defineStore('spreadsheetstore', {
       updateSpreadsheet(newData) {
           this.data = newData;
       },
-    // setSpreadsheetInstance(instance) { // 新增方法
-    //   this.spreadsheetInstance = instance;
-    // },
-    // setData(newData) {
-    //   this.data = newData;
-    // },
-    // setColumns(newColumns) {
-    //   this.columns = newColumns;
-    // },
-    // resetSpreadsheet() {
-    //   if (this.spreadsheetInstance) {
-    //     // 清空表格数据
-    //     this.spreadsheetInstance.clear();
-    //
-    //     // 使用store中的数据和列重新设置表格
-    //     this.spreadsheetInstance.loadData(this.data);
-    //     this.spreadsheetInstance.setColumns(this.columns);
-    //   }
-    // },
+      setSpreadsheetInstance(instance) {  // 新增方法来存储jspreadsheet实例
+        this.spreadsheetInstance = instance;
+      },
   }
 });
