@@ -1,11 +1,3 @@
-<script setup>
-import {ArrowDown,
-        RefreshRight,
-        RefreshLeft
-} from '@element-plus/icons-vue'
-
-</script>
-
 <template>
   <el-dropdown trigger="click">
     <el-button text>
@@ -14,12 +6,12 @@ import {ArrowDown,
     <template #dropdown>
       <el-dropdown-menu>
 
-        <el-dropdown-item>
+        <el-dropdown-item @click="undo">
           <el-icon><RefreshLeft /></el-icon>
           Undo
         </el-dropdown-item>
 
-        <el-dropdown-item>
+        <el-dropdown-item @click="repeat">
           <el-icon><RefreshRight /></el-icon>
           Repeat
         </el-dropdown-item>
@@ -32,6 +24,25 @@ import {ArrowDown,
     </template>
   </el-dropdown>
 </template>
+
+<script setup>
+import {ArrowDown,
+        RefreshRight,
+        RefreshLeft
+} from '@element-plus/icons-vue'
+import { useSpreadsheetStore } from "@/stores/spreadsheet.js";
+
+const spreadsheetStore = useSpreadsheetStore();
+
+const undo = () => {
+  spreadsheetStore.spreadsheetInstance.undo();
+}
+
+const repeat = () => {
+  spreadsheetStore.spreadsheetInstance.redo();
+}
+
+</script>
 
 <style scoped>
 .example-showcase .el-dropdown-link {
