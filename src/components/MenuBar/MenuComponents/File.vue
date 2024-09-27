@@ -14,15 +14,15 @@
 <!--        <el-dropdown-item @click="openDialog('Paste table data', 'Paste table data', pasteData,-->
 <!--        'Paste (Ctrl + V) below an existing table copied (Ctrl + C) from a spreadsheet (e.g. Microsoft Excel), a text document, a Markdown / HTML code, or even a website.'-->
 <!--            )">Paste table data...</el-dropdown-item>-->
-        <el-dropdown-item @click="openDialog('Paste Latex code', 'Paste LaTeX table source', pasteLatex,
-        'Paste (Ctrl + V) below an existing LaTeX table code.\n'+'\n'+'Please, be aware that the support for loading tables from an existing LaTeX code is severely limited and may work erroneously or may not work at all.'
-            )">From Latex code...</el-dropdown-item>
+<!--        <el-dropdown-item @click="openDialog('Paste Latex code', 'Paste LaTeX table source', pasteLatex,-->
+<!--        'Paste (Ctrl + V) below an existing LaTeX table code.\n'+'\n'+'Please, be aware that the support for loading tables from an existing LaTeX code is severely limited and may work erroneously or may not work at all.'-->
+<!--            )">From Latex code...</el-dropdown-item>-->
         <el-dropdown-item @click="openDialog('Save table', 'Save table', saveTable,
         'If you want to keep the table for any future editing click the Download button below. The file with the table can be loaded back using the Load table option from the menu.'
             )" divided>Save table...</el-dropdown-item>
-        <el-dropdown-item @click="openDialog('Load table', 'Load table...', loadTable,)">Load table...</el-dropdown-item>
-        <el-dropdown-item @click="handleCommand('download')" divided>Download as CSV</el-dropdown-item>
-        <el-dropdown-item @click="handleCommand('example')" divided>Create an example table</el-dropdown-item>
+        <el-dropdown-item @click="openDialog('Load table', 'Load table...', loadTable, 'Load table from a previously saved .json file.')">Load table...</el-dropdown-item>
+        <el-dropdown-item @click="openDialog('Download as CSV', 'Download as CSV', downloadCSV, '')" divided>Download as CSV</el-dropdown-item>
+        <el-dropdown-item @click="openDialog('example')" divided>Create an example table</el-dropdown-item>
       </el-dropdown-menu>
 
     </template>
@@ -30,9 +30,11 @@
   <!-- 动态弹窗 -->
   <el-dialog v-model="dialogVisible">
     <div>{{ dialogContent }}</div>
-
-    <input v-if="dialogTitle === 'Import CSV file'" type="file" @change="handleFileChange" accept=".csv" />
-
+    <div>
+      <input v-if="dialogTitle === 'Import CSV file'" type="file" @change="handleFileChange" accept=".csv" id="importCsvInput" />
+      <input v-if="dialogTitle === 'Save table'" type="text" v-model="fileName" placeholder="fileName" id="saveTableInput" />
+      <input v-if="dialogTitle === 'Load table'" type="file" @change="handleJsonFile" accept=".json" id="loadTableInput" />
+    </div>
     <p>{{ dialogContentText }}</p>
 
     <el-space direction="vertical" v-if="dialogTitle === 'Create new table'" class="input-section">
@@ -60,6 +62,7 @@ import { ref } from 'vue';
 import { ArrowDown, ArrowUp, Minus, Plus } from '@element-plus/icons-vue'
 import { useSpreadsheetStore } from '@/stores/spreadsheet'
 import jspreadsheet from "jspreadsheet-ce";
+import Papa from 'papaparse';
 
 const spreadsheetStore = useSpreadsheetStore();
 // 控制弹窗可见性和动态内容
@@ -99,25 +102,19 @@ const createTable = () => {
   }));
   const newStyles = {};
 
-  // 更新Pinia仓库中的data, columns, 和 style
-  spreadsheetStore.data = newData;
-  spreadsheetStore.columns = newColumns;
-  spreadsheetStore.style = newStyles;
-
   if (spreadsheetStore.spreadsheetInstance) {
     spreadsheetStore.spreadsheetInstance.destroy(); // 销毁旧实例
     spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, {
-      data: spreadsheetStore.data,
-      columns: spreadsheetStore.columns,
-      style: spreadsheetStore.style
+      data: newData,
+      columns: newColumns,
+      style: newStyles,
+      onselection: spreadsheetStore.updateSelect,
     });
+    spreadsheetStore.updateStore()
+    console.log('New table created');
   }
-  console.log('New table created');
   dialogVisible.value = false; // 关闭弹窗
 };
-
-// const csvFile = ref(null)
-import Papa from 'papaparse';
 
 let csvFileContent = '';  // 用于存储文件的文本内容
 
@@ -141,26 +138,18 @@ const handleFileChange = (event) => {
 };
 
 const importCSV = () => {
-  console.log('CSV file imported');
   if (spreadsheetStore.spreadsheetInstance) {
-    // 销毁旧实例
     spreadsheetStore.spreadsheetInstance.destroy();
-
-    // 重新初始化表格实例并使用解析后的CSV数据
     spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, {
       data: csvFileContent, // 使用解析后的CSV数据
       columns: Array(csvFileContent[0].length).fill({ type: 'text', width: 100 }),  // 自动生成列
+      onselection: spreadsheetStore.updateSelect,
     });
-
-    // 同步数据到Pinia仓库
-    spreadsheetStore.data = csvFileContent;
-    spreadsheetStore.columns = spreadsheetStore.spreadsheetInstance.options.columns;
-    spreadsheetStore.style = {};
+    spreadsheetStore.updateStore()
+    console.log('CSV file imported');
   }
   dialogVisible.value = false; // 关闭弹窗
 };
-
-
 
 const pasteData = () => {
   console.log('Table data pasted');
@@ -172,23 +161,61 @@ const pasteLatex = () => {
   dialogVisible.value = false; // 关闭弹窗
 };
 
+let fileName = '';
 const saveTable = () => {
+  const customTable = {
+    data: spreadsheetStore.data,
+    columns: spreadsheetStore.columns,
+    style: spreadsheetStore.style,
+  }
+  const jsonData = JSON.stringify(customTable, null, 2);
+  const blob = new Blob([jsonData], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  if (fileName === '') {
+    fileName = 'customTable'
+  }
+  link.setAttribute('download', fileName + '.json'); // 设置下载的文件名
+  // 将a标签添加到文档中（这一步不是必需的，但有时候可以避免某些浏览器的兼容性问题）
+  document.body.appendChild(link);
+  // 模拟点击a标签
+  link.click();
+  // 清理：从文档中移除a标签，并释放Blob URL
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
   console.log('Table saved');
   dialogVisible.value = false; // 关闭弹窗
 };
 
+let tableOptions = {}
+const handleJsonFile = (event) => {
+  const file = event.target.files[0];
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    try {
+      tableOptions = JSON.parse(e.target.result);
+    } catch (error) {
+      console.error('解析JSON时出错:', error);
+    }
+  };
+  reader.readAsText(file);
+};
+
 const loadTable = () => {
+  spreadsheetStore.spreadsheetInstance.destroy();
+  spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, {
+    data: tableOptions.data,
+    columns: tableOptions.columns,
+    style: tableOptions.style,
+    onselection: spreadsheetStore.updateSelect,
+  })
+  spreadsheetStore.updateStore();
   console.log('Table loaded');
   dialogVisible.value = false; // 关闭弹窗
 };
 
-const handleCommand = (command) => {
-  if (command === 'download') {
-    console.log('Download CSV');
-  } else if (command === 'example') {
-    console.log('Create an example table');
-  }
-};
 </script>
 <style scoped>
 .example-showcase .el-dropdown-link {
@@ -205,5 +232,18 @@ const handleCommand = (command) => {
 .input-label {
   margin-right: 8px; /* 给标签添加一些右边距 */
   cursor: pointer; /* 鼠标悬停时显示为手型 */
+}
+#importCsvInput {
+  display: flex;
+  margin-top: 15px;
+}
+#saveTableInput {
+  display: flex;
+  margin-top: 15px;
+  height: 25px;
+}
+#loadTableInput {
+  display: flex;
+  margin-top: 15px;
 }
 </style>

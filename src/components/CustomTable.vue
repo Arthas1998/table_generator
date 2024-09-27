@@ -20,20 +20,22 @@ export default {
       const options = {
         data: spreadsheetStore.data, // 从 store 中获取数据
         columns: spreadsheetStore.columns,
-        style: spreadsheetStore.style
+        style: spreadsheetStore.style,
+        onselection: spreadsheetStore.updateSelect,
       };
       if (spreadsheet.value) {
         const instance = jspreadsheet(spreadsheet.value, options);
         spreadsheetStore.setSpreadsheetInstance(instance);  // 保存实例
-        document.addEventListener('mousedown', (event) => {
-          const isClickInside = spreadsheet.value.contains(event.target);
-
-          if (!isClickInside) {
-            event.preventDefault();
-          }
-        });
+        // document.addEventListener('mousedown', (event) => {
+        //   const isClickInside = spreadsheet.value.contains(event.target);
+        //
+        //   if (!isClickInside) {
+        //     event.preventDefault();
+        //   }
+        // });
       }
     });
+
     return {
       spreadsheet,
     };

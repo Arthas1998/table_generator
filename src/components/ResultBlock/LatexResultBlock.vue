@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button @click="convertToLatex">General</el-button>
+    <el-button @click="convertToLatex">Generate</el-button>
     <textarea v-model="latexCode" rows="10" id="result_block"></textarea>
   </div>
 </template>
@@ -12,7 +12,7 @@ import { useSpreadsheetStore } from '@/stores/spreadsheet';
 const latexCode = ref('');
 const spreadsheetStore = useSpreadsheetStore();
 
-// 解析单元格的样式信息并转换为对应的LaTeX代码
+// 解析单元格的样式信息并转换为对应的 LaTeX 代码
 const parseStyleToLatex = (style) => {
   let latexStyle = "";
 
@@ -60,7 +60,7 @@ const parseStyleToLatex = (style) => {
 const closeStyleTags = (style) => {
   let closingTags = "";
 
-  // 如果包含加粗、斜体、下划线、文字颜色，则关闭这些LaTeX命令
+  // 如果包含加粗、斜体、下划线、文字颜色，则关闭这些 LaTeX 命令
   if (style.includes('font-weight: bold')) {
     closingTags += "}";
   }
@@ -77,6 +77,26 @@ const closeStyleTags = (style) => {
   return closingTags;
 };
 
+// 解析单元格的边框信息
+const parseBorderStyleToLatex = (style) => {
+  let borderCommands = "";
+
+  if (style.includes('border-top-color: black')) {
+    borderCommands += "\\cline{1-1} "; // 处理顶部边框
+  }
+  if (style.includes('border-right-color: black')) {
+    // 默认 LaTeX 表格中，右边框一般不额外设置
+  }
+  if (style.includes('border-bottom-color: black')) {
+    borderCommands += "\\cline{1-1} "; // 处理底部边框
+  }
+  if (style.includes('border-left-color: black')) {
+    // 默认 LaTeX 表格中，左边框一般不额外设置
+  }
+
+  return borderCommands;
+};
+
 const convertToLatex = () => {
   const data = spreadsheetStore.data;
   const columns = spreadsheetStore.columns;
@@ -90,14 +110,16 @@ const convertToLatex = () => {
   latex += columns.map(col => `\\textbf{${col.title || ''}}`).join(' & ') + " \\\\\n";
   latex += "\\hline\n";
 
-  // 添加数据行并处理每个单元格的样式
+  // 添加数据行并处理每个单元格的样式和边框
   data.forEach((row, rowIndex) => {
     latex += row.map((cell, colIndex) => {
       const cellKey = String.fromCharCode(65 + colIndex) + (rowIndex + 1); // 生成 A1, B2 格式的 key
       const cellStyle = styles[cellKey] || "";
       const latexStyle = parseStyleToLatex(cellStyle);
+      const borderCommands = parseBorderStyleToLatex(cellStyle);
       const closingTags = closeStyleTags(cellStyle);
-      return `${latexStyle}${cell}${closingTags}`;
+
+      return `${borderCommands}${latexStyle}${cell}${closingTags}`;
     }).join(' & ') + " \\\\\n";
   });
 
