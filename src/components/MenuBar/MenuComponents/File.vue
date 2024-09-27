@@ -21,8 +21,9 @@
         'If you want to keep the table for any future editing click the Download button below. The file with the table can be loaded back using the Load table option from the menu.'
             )" divided>Save table...</el-dropdown-item>
         <el-dropdown-item @click="openDialog('Load table', 'Load table...', loadTable, 'Load table from a previously saved .json file.')">Load table...</el-dropdown-item>
-        <el-dropdown-item @click="openDialog('Download as CSV', 'Download as CSV', downloadCSV, '')" divided>Download as CSV</el-dropdown-item>
-        <el-dropdown-item @click="openDialog('example')" divided>Create an example table</el-dropdown-item>
+<!--        <el-dropdown-item @click="openDialog('Download as CSV', 'Download as CSV', downloadCSV, 'You can download your table as CSV format.')" divided>Download as CSV</el-dropdown-item>-->
+        <el-dropdown-item @click="downloadCSV" divided>Download as CSV</el-dropdown-item>
+        <el-dropdown-item @click="exampleTable" divided>Create an example table</el-dropdown-item>
       </el-dropdown-menu>
 
     </template>
@@ -30,11 +31,10 @@
   <!-- 动态弹窗 -->
   <el-dialog v-model="dialogVisible">
     <div>{{ dialogContent }}</div>
-    <div>
-      <input v-if="dialogTitle === 'Import CSV file'" type="file" @change="handleFileChange" accept=".csv" id="importCsvInput" />
-      <input v-if="dialogTitle === 'Save table'" type="text" v-model="fileName" placeholder="fileName" id="saveTableInput" />
-      <input v-if="dialogTitle === 'Load table'" type="file" @change="handleJsonFile" accept=".json" id="loadTableInput" />
-    </div>
+    <input v-if="dialogTitle === 'Import CSV file'" type="file" @change="handleFileChange" accept=".csv" id="importCsvInput" />
+    <input v-if="dialogTitle === 'Save table'" type="text" v-model="fileName" placeholder="fileName" id="saveTableInput" />
+    <input v-if="dialogTitle === 'Load table'" type="file" @change="handleJsonFile" accept=".json" id="loadTableInput" />
+    <input v-if="dialogTitle === 'Download as CSV'" type="text" v-model="fileName" placeholder="fileName" id="downloadCsvInput" />
     <p>{{ dialogContentText }}</p>
 
     <el-space direction="vertical" v-if="dialogTitle === 'Create new table'" class="input-section">
@@ -215,6 +215,38 @@ const loadTable = () => {
   console.log('Table loaded');
   dialogVisible.value = false; // 关闭弹窗
 };
+
+const downloadCSV = () => {
+  spreadsheetStore.spreadsheetInstance.download();
+  console.log('Download CSV');
+}
+
+const exampleTable = () => {
+  const options = {
+    data: [
+      ['Mazda', 2001, 2000, '2006-01-01'],
+      ['Pegeout', 2010, 5000, '2005-01-01'],
+      ['Honda Fit', 2009, 3000, '2004-01-01'],
+      ['Honda CRV', 2010, 6000, '2003-01-01'],
+    ],
+    columns: [
+        { type: 'text', width:'200' },
+        { type: 'text', width:'100' },
+        { type: 'text', width:'100' },
+        { type: 'calendar', width:'100' },
+    ],
+    style: {}
+  }
+  spreadsheetStore.spreadsheetInstance.destroy();
+  spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, {
+    data: options.data,
+    columns: options.columns,
+    style: options.style,
+    onselection: spreadsheetStore.updateSelect,
+  })
+  spreadsheetStore.updateStore();
+  console.log('Generate example');
+}
 
 </script>
 <style scoped>
