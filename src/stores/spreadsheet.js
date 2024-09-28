@@ -26,6 +26,7 @@ export const useSpreadsheetStore = defineStore('spreadsheetstore', {
   actions: {
       updateSelect(instance, x1, y1, x2, y2, origin){
           this.selectCells = [[x1, y1], [x2, y2]];
+          console.log(this.selectCells)
       },
       updateStore() {
           this.data = this.spreadsheetInstance.getData();
