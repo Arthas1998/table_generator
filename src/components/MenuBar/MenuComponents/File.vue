@@ -100,16 +100,13 @@ const createTable = () => {
     type: 'text',
     width: 100,  // 设置单元格宽度为100
   }));
-  const newStyles = {};
+  // const newStyles = {};
+
+  const options = spreadsheetStore.setupOptions(newData, newColumns)
 
   if (spreadsheetStore.spreadsheetInstance) {
     spreadsheetStore.spreadsheetInstance.destroy(); // 销毁旧实例
-    spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, {
-      data: newData,
-      columns: newColumns,
-      style: newStyles,
-      onselection: spreadsheetStore.updateSelect,
-    });
+    spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, options);
     spreadsheetStore.updateStore()
     console.log('New table created');
   }
@@ -138,13 +135,12 @@ const handleFileChange = (event) => {
 };
 
 const importCSV = () => {
+  const columns = Array(csvFileContent[0].length).fill({ type: 'text', width: 100 });  // 自动生成列
+
+  const options = spreadsheetStore.setupOptions(csvFileContent, columns);
   if (spreadsheetStore.spreadsheetInstance) {
     spreadsheetStore.spreadsheetInstance.destroy();
-    spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, {
-      data: csvFileContent, // 使用解析后的CSV数据
-      columns: Array(csvFileContent[0].length).fill({ type: 'text', width: 100 }),  // 自动生成列
-      onselection: spreadsheetStore.updateSelect,
-    });
+    spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, options);
     spreadsheetStore.updateStore()
     console.log('CSV file imported');
   }
@@ -204,13 +200,10 @@ const handleJsonFile = (event) => {
 };
 
 const loadTable = () => {
+  let options = spreadsheetStore.setupOptions(tableOptions.data, tableOptions.columns);
+  options['style'] = tableOptions.style;
   spreadsheetStore.spreadsheetInstance.destroy();
-  spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, {
-    data: tableOptions.data,
-    columns: tableOptions.columns,
-    style: tableOptions.style,
-    onselection: spreadsheetStore.updateSelect,
-  })
+  spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, options)
   spreadsheetStore.updateStore();
   console.log('Table loaded');
   dialogVisible.value = false; // 关闭弹窗
@@ -222,28 +215,21 @@ const downloadCSV = () => {
 }
 
 const exampleTable = () => {
-  const options = {
-    data: [
+  const data = [
       ['Mazda', '2001', '2000', '2006-01-01'],
       ['Pegeout', '2010', '5000', '2005-01-01'],
       ['Honda Fit', '2009', '3000', '2004-01-01'],
       ['Honda CRV', '2010', '6000', '2003-01-01'],
-    ],
-    columns: [
+  ];
+  const columns = [
         { type: 'text', width:'200' },
         { type: 'text', width:'100' },
         { type: 'text', width:'100' },
         { type: 'calendar', width:'100' },
-    ],
-    style: {}
-  }
+  ];
+  const options = spreadsheetStore.setupOptions(data, columns)
   spreadsheetStore.spreadsheetInstance.destroy();
-  spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, {
-    data: options.data,
-    columns: options.columns,
-    style: options.style,
-    onselection: spreadsheetStore.updateSelect,
-  })
+  spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, options)
   spreadsheetStore.updateStore();
   console.log('Generate example');
 }

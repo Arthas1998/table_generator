@@ -1,6 +1,7 @@
 <template>
   {{ spreadsheetStore.data }}<hr>
   {{ spreadsheetStore.columns }}<hr>
+  {{ spreadsheetStore.style }}<hr>
 <!--  {{ tables }}<hr>-->
   <button @click="addRow">添加一行</button>
   <input type="file" @change="handleFileChange" accept=".csv" />

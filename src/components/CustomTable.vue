@@ -17,12 +17,7 @@ export default {
     const spreadsheet = ref(null);
     const spreadsheetStore = useSpreadsheetStore();
     onMounted(() => {
-      const options = {
-        data: spreadsheetStore.data, // 从 store 中获取数据
-        columns: spreadsheetStore.columns,
-        style: spreadsheetStore.style,
-        onselection: spreadsheetStore.updateSelect,
-      };
+      const options = spreadsheetStore.setupOptions()
       if (spreadsheet.value) {
         const instance = jspreadsheet(spreadsheet.value, options);
         spreadsheetStore.setSpreadsheetInstance(instance);  // 保存实例
