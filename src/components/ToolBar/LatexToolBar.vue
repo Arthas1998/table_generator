@@ -26,6 +26,5 @@ import SplitCells from "@/components/ToolBar/ToolComponents/SplitCells.vue";
 }
 .text-align{
   display: inline;
-  margin-right: 10px;
 }
 </style>

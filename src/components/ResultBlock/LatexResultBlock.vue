@@ -1,137 +1,98 @@
 <template>
   <div>
-    <el-button @click="convertToLatex">Generate</el-button>
-    <textarea v-model="latexCode" rows="10" id="result_block"></textarea>
+    <el-button @click="generateLatexTable">Generate</el-button>
+    <textarea v-model="latexTable" rows="10" id="latex_result_block"></textarea>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { useSpreadsheetStore } from '@/stores/spreadsheet';
-
-const latexCode = ref('');
 const spreadsheetStore = useSpreadsheetStore();
+const latexTable = ref('');
 
-// 解析单元格的样式信息并转换为对应的 LaTeX 代码
-const parseStyleToLatex = (style) => {
-  let latexStyle = "";
+const generateLatexTable = () => {
+  const { data, columns, style } = spreadsheetStore;
+  const merges = spreadsheetStore.spreadsheetInstance.getMerge() || {};
 
-  // 处理文字对齐
-  if (style.includes('text-align: left')) {
-    latexStyle += "\\raggedright ";
-  } else if (style.includes('text-align: center')) {
-    latexStyle += "\\centering ";
-  } else if (style.includes('text-align: right')) {
-    latexStyle += "\\raggedleft ";
-  }
+  // 开始构建 LaTeX 表格
+  let latex = '\\begin{tabular}{' + 'c'.repeat(columns.length) + '}\n';
 
-  // 处理文字加粗
-  if (style.includes('font-weight: bold')) {
-    latexStyle += "\\textbf{";
-  }
+  // 添加数据行
+  const usedCells = new Set(); // 用于跟踪已使用的单元格
 
-  // 处理文字斜体
-  if (style.includes('font-style: italic')) {
-    latexStyle += "\\textit{";
-  }
-
-  // 处理文字下划线
-  if (style.includes('text-decoration: underline')) {
-    latexStyle += "\\underline{";
-  }
-
-  // 处理背景颜色
-  const bgColorMatch = style.match(/background-color: (\w+);/);
-  if (bgColorMatch) {
-    const bgColor = bgColorMatch[1];
-    latexStyle += `\\cellcolor{${bgColor}} `;
-  }
-
-  // 处理文字颜色
-  const colorMatch = style.match(/color: (\w+);/);
-  if (colorMatch) {
-    const textColor = colorMatch[1];
-    latexStyle += `\\textcolor{${textColor}}{`;
-  }
-
-  return latexStyle;
-};
-
-const closeStyleTags = (style) => {
-  let closingTags = "";
-
-  // 如果包含加粗、斜体、下划线、文字颜色，则关闭这些 LaTeX 命令
-  if (style.includes('font-weight: bold')) {
-    closingTags += "}";
-  }
-  if (style.includes('font-style: italic')) {
-    closingTags += "}";
-  }
-  if (style.includes('text-decoration: underline')) {
-    closingTags += "}";
-  }
-  if (style.includes('color:')) {
-    closingTags += "}";
-  }
-
-  return closingTags;
-};
-
-// 解析单元格的边框信息
-const parseBorderStyleToLatex = (style) => {
-  let borderCommands = "";
-
-  if (style.includes('border-top-color: black')) {
-    borderCommands += "\\cline{1-1} "; // 处理顶部边框
-  }
-  if (style.includes('border-right-color: black')) {
-    // 默认 LaTeX 表格中，右边框一般不额外设置
-  }
-  if (style.includes('border-bottom-color: black')) {
-    borderCommands += "\\cline{1-1} "; // 处理底部边框
-  }
-  if (style.includes('border-left-color: black')) {
-    // 默认 LaTeX 表格中，左边框一般不额外设置
-  }
-
-  return borderCommands;
-};
-
-const convertToLatex = () => {
-  const data = spreadsheetStore.data;
-  const columns = spreadsheetStore.columns;
-  const styles = spreadsheetStore.style;
-
-  // 设置 LaTeX 表格列对齐方式
-  let latex = "\\begin{tabular}{";
-  latex += columns.map(col => col.align === 'left' ? 'l' : col.align === 'right' ? 'r' : 'c').join('') + "}\n";
-
-  // 添加列头并处理加粗
-  latex += columns.map(col => `\\textbf{${col.title || ''}}`).join(' & ') + " \\\\\n";
-  latex += "\\hline\n";
-
-  // 添加数据行并处理每个单元格的样式和边框
   data.forEach((row, rowIndex) => {
-    latex += row.map((cell, colIndex) => {
-      const cellKey = String.fromCharCode(65 + colIndex) + (rowIndex + 1); // 生成 A1, B2 格式的 key
-      const cellStyle = styles[cellKey] || "";
-      const latexStyle = parseStyleToLatex(cellStyle);
-      const borderCommands = parseBorderStyleToLatex(cellStyle);
-      const closingTags = closeStyleTags(cellStyle);
+    row.forEach((cell, cellIndex) => {
+      const cellKey = String.fromCharCode(65 + cellIndex) + (rowIndex + 1); // A1, B1, C1...
 
-      return `${borderCommands}${latexStyle}${cell}${closingTags}`;
-    }).join(' & ') + " \\\\\n";
+      // 检查是否合并
+      if (merges[cellKey]) {
+        const [colSpan, rowSpan] = merges[cellKey];
+        if (usedCells.has(cellKey)) return; // 如果该单元格已使用则跳过
+
+        const cellStyle = style[cellKey] || 'text-align: center'; // 默认居中
+        let formattedCell = cell;
+
+        // 解析样式并转换为 LaTeX 格式
+        if (cellStyle.includes('font-weight: bold')) {
+          formattedCell = `\\textbf{${formattedCell}}`;
+        }
+        if (cellStyle.includes('font-style: italic')) {
+          formattedCell = `\\textit{${formattedCell}}`;
+        }
+        if (cellStyle.includes('text-decoration: underline')) {
+          formattedCell = `\\ul ${formattedCell}`;
+        }
+
+        // 获取对齐属性
+        const alignment = cellStyle.includes('text-align: right') ? 'r' :
+                          cellStyle.includes('text-align: left') ? 'l' : 'c';
+
+        // 添加合并单元格
+        latex += `\\multicolumn{${colSpan}}{${alignment}}{${formattedCell}}`;
+        if (rowSpan > 1) {
+          for (let i = 1; i < rowSpan; i++) {
+            usedCells.add(String.fromCharCode(65 + cellIndex) + (rowIndex + i + 1)); // 标记合并的单元格
+          }
+        }
+      } else if (!usedCells.has(cellKey)) {
+        // 处理未合并的单元格
+        const cellStyle = style[cellKey] || 'text-align: center'; // 默认居中
+        let formattedCell = cell;
+
+        // 解析样式并转换为 LaTeX 格式
+        if (cellStyle.includes('font-weight: bold')) {
+          formattedCell = `\\textbf{${formattedCell}}`;
+        }
+        if (cellStyle.includes('font-style: italic')) {
+          formattedCell = `\\textit{${formattedCell}}`;
+        }
+        if (cellStyle.includes('text-decoration: underline')) {
+          formattedCell = `\\ul{${formattedCell}}`;
+        }
+
+        // 获取对齐属性
+        const alignment = cellStyle.includes('text-align: right') ? 'r' :
+                          cellStyle.includes('text-align: left') ? 'l' : 'c';
+
+        latex += `\\multicolumn{1}{${alignment}}{${formattedCell}}`;
+      }
+
+      if (cellIndex < row.length - 1 && !merges[cellKey]) {
+        latex += '& ';
+      }
+    });
+    latex += '\\\\ \n'; // 每行结束
   });
 
-  latex += "\\end{tabular}";
-
-  latexCode.value = latex;
+  latex += '\\end{tabular}'; // 结束表格
+  latexTable.value = latex; // 更新 latexTable 的值
 };
 
 </script>
 
 <style scoped>
-#result_block {
+#latex_result_block {
   width: 100%; /* 设置 textarea 占满宽度 */
 }
 </style>

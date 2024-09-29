@@ -18,7 +18,6 @@ import Italic from "@/components/ToolBar/ToolComponents/Italic.vue";
   display: flex;
 }
 .text-align{
-  display: flex;
-  margin-right: 30px;
+  display: inline;
 }
 </style>
