@@ -163,6 +163,7 @@ const saveTable = () => {
     data: spreadsheetStore.data,
     columns: spreadsheetStore.columns,
     style: spreadsheetStore.style,
+    mergeCells: spreadsheetStore.spreadsheetInstance.getMerge(),
   }
   const jsonData = JSON.stringify(customTable, null, 2);
   const blob = new Blob([jsonData], { type: 'application/json' });
@@ -204,6 +205,9 @@ const loadTable = () => {
   options['style'] = tableOptions.style;
   spreadsheetStore.spreadsheetInstance.destroy();
   spreadsheetStore.spreadsheetInstance = jspreadsheet(spreadsheetStore.spreadsheetInstance.el, options)
+  for (let [key, value] of Object.entries(tableOptions.mergeCells)) {
+      spreadsheetStore.spreadsheetInstance.setMerge(key, value[0], value[1]);
+  }
   spreadsheetStore.updateStore();
   console.log('Table loaded');
   dialogVisible.value = false; // 关闭弹窗
